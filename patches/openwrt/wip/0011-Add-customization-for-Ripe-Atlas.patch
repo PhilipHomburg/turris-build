@@ -1,0 +1,61 @@
+From 0794c3f81a157041508f39c4700e13184335e655 Mon Sep 17 00:00:00 2001
+From: Michal Hrusecky <Michal@Hrusecky.net>
+Date: Fri, 3 Apr 2020 20:41:19 +0200
+Subject: [PATCH] Add customization for Ripe Atlas
+
+---
+ .../mvebu/patches-4.14/99000-ripe-atlas.patch | 42 +++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+ create mode 100644 target/linux/mvebu/patches-4.14/99000-ripe-atlas.patch
+
+diff --git a/target/linux/mvebu/patches-4.14/99000-ripe-atlas.patch b/target/linux/mvebu/patches-4.14/99000-ripe-atlas.patch
+new file mode 100644
+index 0000000..b9a29d4
+--- /dev/null
++++ b/target/linux/mvebu/patches-4.14/99000-ripe-atlas.patch
+@@ -0,0 +1,42 @@
++diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
++index bb42d1e6a4e9..3490ab41cc79 100644
++--- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+++++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
++@@ -162,6 +162,7 @@ &eth1 {
++ 	phys = <&comphy0 1>;
++ };
++ 
+++/*
++ &sdhci0 {
++ 	wp-inverted;
++ 	bus-width = <4>;
++@@ -169,6 +170,29 @@ &sdhci0 {
++ 	vqmmc-supply = <&vsdc_reg>;
++ 	marvell,pad-type = "sd";
++ 	status = "okay";
+++};*/
+++
+++&sdhci0 {
+++	non-removable;
+++	bus-width = <4>;
+++	mmc-ddr-1_8v;
+++	mmc-hs400-1_8v;
+++	sd-uhs-sdr104;
+++	marvell,xenon-emmc;
+++	marvell,xenon-tun-count = <9>;
+++	marvell,pad-type = "fixed-1-8v";
+++	vqmmc-supply = <&vsdc_reg>;
+++
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&mmc_pins>;
+++	status = "okay";
+++
+++	#address-cells = <1>;
+++	#size-cells = <0>;
+++	mmccard: mmccard@0 {
+++		compatible = "mmc-card";
+++		reg = <0>;
+++	};
++ };
++ 
++ &sdhci1 {
+-- 
+2.26.0
+
