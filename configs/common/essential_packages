@@ -27,7 +27,7 @@ CONFIG_PACKAGE_ethtool=y
 CONFIG_PACKAGE_logrotate=y
 CONFIG_PACKAGE_curl=y
 CONFIG_PACKAGE_wget=y
-CONFIG_PACKAGE_syslog-ng=y
+CONFIG_PACKAGE_syslog-ng=n
 CONFIG_PACKAGE_ntpdate=y
 CONFIG_PACKAGE_i2c-tools=y
 CONFIG_PACKAGE_haveged=y
@@ -40,7 +40,7 @@ CONFIG_PACKAGE_knot-dig=y
 
 # Network related packages
 CONFIG_PACKAGE_at=y
-CONFIG_PACKAGE_dnsmasq-full=y
+CONFIG_PACKAGE_dnsmasq-full=n
 CONFIG_PACKAGE_umdns=y
 CONFIG_PACKAGE_ip-full=y
 CONFIG_PACKAGE_iptables=y
@@ -71,7 +71,7 @@ CONFIG_PACKAGE_openssh-server=y
 CONFIG_PACKAGE_openssh-sftp-server=y
 
 # Wireless packages
-CONFIG_PACKAGE_hostapd-common=y
-CONFIG_PACKAGE_iw-full=y
-CONFIG_PACKAGE_iwinfo=y
-CONFIG_PACKAGE_wpad=y
+CONFIG_PACKAGE_hostapd-common=n
+CONFIG_PACKAGE_iw-full=n
+CONFIG_PACKAGE_iwinfo=n
+CONFIG_PACKAGE_wpad=n
