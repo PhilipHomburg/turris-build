@@ -1,0 +1,21 @@
+From 6dce20340cc657d0fbcd4dbbdddbd4d42c36e056 Mon Sep 17 00:00:00 2001
+From: Michal Hrusecky <Michal@Hrusecky.net>
+Date: Tue, 7 Apr 2020 14:53:44 +0200
+Subject: [PATCH] target: Fix default kernel config
+
+---
+ target/linux/mvebu/config-4.14 | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/target/linux/mvebu/config-4.14 b/target/linux/mvebu/config-4.14
+index 7d23074..0409dd8 100644
+--- a/target/linux/mvebu/config-4.14
++++ b/target/linux/mvebu/config-4.14
+@@ -499,3 +499,4 @@ CONFIG_ZLIB_DEFLATE=y
+ CONFIG_ZLIB_INFLATE=y
+ # CONFIG_ARMADA_37XX_WATCHDOG is not set
+ # CONFIG_ARMADA_37XX_RWTM_MBOX is not set
++# CONFIG_BTRFS_FS_CHECK_INTEGRITY is not set
+-- 
+2.26.0
+
