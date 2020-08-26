@@ -1,15 +1,15 @@
 # Override default y for OpenWrt core package replaced by their alternatives
-CONFIG_PACKAGE_uhttpd=m
-CONFIG_PACKAGE_uhttpd-mod-ubus=m
-CONFIG_PACKAGE_dropbear=m
+CONFIG_PACKAGE_uhttpd=n
+CONFIG_PACKAGE_uhttpd-mod-ubus=n
+CONFIG_PACKAGE_dropbear=n
 
 # Disable wpad-mini as installing makes impossible to use opkg
 CONFIG_PACKAGE_wpad-mini=n
 
 # Enable SSL (OpenSSL backend) for various packages
-CONFIG_SOCAT_SSL=y
-CONFIG_LIGHTTPD_SSL=y
-CONFIG_LIBCURL_OPENSSL=y
+CONFIG_SOCAT_SSL=n
+CONFIG_LIGHTTPD_SSL=n
+CONFIG_LIBCURL_OPENSSL=n
 
 # Pretty output options
-CONFIG_ETHTOOL_PRETTY_DUMP=y
+CONFIG_ETHTOOL_PRETTY_DUMP=n
