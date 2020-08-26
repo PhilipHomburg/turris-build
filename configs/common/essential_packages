@@ -1,33 +1,33 @@
 # CZ NIC packages
-CONFIG_PACKAGE_cznic-repo-keys=y
-CONFIG_PACKAGE_cznic-repo-keys-test=y
-CONFIG_PACKAGE_c-rehash=y
+CONFIG_PACKAGE_cznic-repo-keys=n
+CONFIG_PACKAGE_cznic-repo-keys-test=n
+CONFIG_PACKAGE_c-rehash=n
 CONFIG_PACKAGE_cert-backup=y
-CONFIG_PACKAGE_create_notification=y
+CONFIG_PACKAGE_create_notification=n
 CONFIG_PACKAGE_watchdog_adjust=y
 CONFIG_PACKAGE_start-indicator=y
 
 # Turris packages
 CONFIG_PACKAGE_schnapps=y
-CONFIG_PACKAGE_dnssec-rootkey=y
-CONFIG_PACKAGE_resolver-conf=y
-CONFIG_PACKAGE_turris-utils=y
-CONFIG_PACKAGE_turris-webapps=y
-CONFIG_PACKAGE_turris-version=y
+CONFIG_PACKAGE_dnssec-rootkey=n
+CONFIG_PACKAGE_resolver-conf=n
+CONFIG_PACKAGE_turris-utils=n
+CONFIG_PACKAGE_turris-webapps=n
+CONFIG_PACKAGE_turris-version=n
 
 # Updater packages
-CONFIG_PACKAGE_updater-ng=y
-CONFIG_PACKAGE_updater-supervisor=y
-CONFIG_PACKAGE_updater-opkg-wrapper=y
-CONFIG_PACKAGE_localrepo=y
+CONFIG_PACKAGE_updater-ng=n
+CONFIG_PACKAGE_updater-supervisor=n
+CONFIG_PACKAGE_updater-opkg-wrapper=n
+CONFIG_PACKAGE_localrepo=n
 
 # Base packages
-CONFIG_PACKAGE_ethtool=y
-CONFIG_PACKAGE_logrotate=y
-CONFIG_PACKAGE_curl=y
-CONFIG_PACKAGE_wget=y
-CONFIG_PACKAGE_syslog-ng=y
-CONFIG_PACKAGE_ntpdate=y
+CONFIG_PACKAGE_ethtool=n
+CONFIG_PACKAGE_logrotate=n
+CONFIG_PACKAGE_curl=n
+CONFIG_PACKAGE_wget=n
+CONFIG_PACKAGE_syslog-ng=n
+CONFIG_PACKAGE_ntpdate=n
 CONFIG_PACKAGE_i2c-tools=y
 CONFIG_PACKAGE_haveged=y
 CONFIG_PACKAGE_msmtp=y
@@ -36,30 +36,30 @@ CONFIG_PACKAGE_gettext-tools=y
 # Debug
 CONFIG_PACKAGE_pciutils=y
 CONFIG_PACKAGE_usbutils=y
-CONFIG_PACKAGE_knot-dig=y
+CONFIG_PACKAGE_knot-dig=n
 
 # Network related packages
-CONFIG_PACKAGE_at=y
-CONFIG_PACKAGE_dnsmasq-full=y
-CONFIG_PACKAGE_umdns=y
+CONFIG_PACKAGE_at=n
+CONFIG_PACKAGE_dnsmasq-full=n
+CONFIG_PACKAGE_umdns=n
 CONFIG_PACKAGE_ip-full=y
 CONFIG_PACKAGE_iptables=y
 CONFIG_PACKAGE_ip6tables=y
 CONFIG_PACKAGE_iputils-ping=y
-CONFIG_PACKAGE_socat=y
+CONFIG_PACKAGE_socat=n
 
 # Fancy stuff like LEDs
 CONFIG_PACKAGE_kmod-ledtrig-heartbeat=y
 
 # LuCI
-CONFIG_PACKAGE_luci-base=y
-CONFIG_PACKAGE_luci=y
-CONFIG_PACKAGE_luci-mod-admin-full=y
-CONFIG_PACKAGE_luci-mod-rpc=y
-CONFIG_PACKAGE_luci-app-firewall=y
-CONFIG_PACKAGE_luci-theme-bootstrap=y
-CONFIG_PACKAGE_luci-proto-ipv6=y
-CONFIG_PACKAGE_luci-proto-ppp=y
+CONFIG_PACKAGE_luci-base=n
+CONFIG_PACKAGE_luci=n
+CONFIG_PACKAGE_luci-mod-admin-full=n
+CONFIG_PACKAGE_luci-mod-rpc=n
+CONFIG_PACKAGE_luci-app-firewall=n
+CONFIG_PACKAGE_luci-theme-bootstrap=n
+CONFIG_PACKAGE_luci-proto-ipv6=n
+CONFIG_PACKAGE_luci-proto-ppp=n
 
 # OpenSSH packages
 CONFIG_PACKAGE_openssh-client=y
@@ -71,7 +71,12 @@ CONFIG_PACKAGE_openssh-server=y
 CONFIG_PACKAGE_openssh-sftp-server=y
 
 # Wireless packages
-CONFIG_PACKAGE_hostapd-common=y
-CONFIG_PACKAGE_iw-full=y
-CONFIG_PACKAGE_iwinfo=y
-CONFIG_PACKAGE_wpad=y
+CONFIG_PACKAGE_hostapd-common=n
+CONFIG_PACKAGE_iw-full=n
+CONFIG_PACKAGE_iwinfo=n
+CONFIG_PACKAGE_wpad=n
+
+CONFIG_PACKAGE_dnsmasq=n
+CONFIG_LUCI_JSMIN=n
+CONFIG_LUCI_CSSTIDY=n
+CONFIG_PACKAGE_uboot-envtools
