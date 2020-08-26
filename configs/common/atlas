@@ -1,0 +1,25 @@
+# For Atlas
+CONFIG_PACKAGE_atlas_extra=y
+CONFIG_PACKAGE_atlasmsm=y
+CONFIG_PACKAGE_atlasprobe=y
+CONFIG_PACKAGE_sudo=y
+CONFIG_PACKAGE_tar=y
+CONFIG_PACKAGE_TAR_POSIX_ACL=y
+CONFIG_PACKAGE_TAR_XATTR=y
+CONFIG_PACKAGE_TAR_GZIP=y
+CONFIG_PACKAGE_TAR_BZIP2=y
+CONFIG_PACKAGE_TAR_XZ=y
+CONFIG_PACKAGE_screen=y
+CONFIG_PACKAGE_xz-utils=y
+CONFIG_PACKAGE_xz=y
+CONFIG_PACKAGE_bzip2=y
+CONFIG_PACKAGE_chrony=y
+CONFIG_PACKAGE_libevent2=y
+CONFIG_PACKAGE_libevent2-core=y
+CONFIG_PACKAGE_libevent2-openssl=y
+CONFIG_PACKAGE_libevent2-pthreads=y
+CONFIG_PACKAGE_libcap-bin=y
+CONFIG_PACKAGE_libcap-bin-capsh-shell="/bin/sh"
+CONFIG_PACKAGE_btrfs-progs=y
+CONFIG_PACKAGE_mount-utils=y
+CONFIG_PACKAGE_openssl-util=y
