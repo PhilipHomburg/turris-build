@@ -1,0 +1,24 @@
+From 45c260f15323138dea7a3ae34e150db2d763319b Mon Sep 17 00:00:00 2001
+From: Michal Hrusecky <Michal@Hrusecky.net>
+Date: Wed, 8 Apr 2020 13:59:21 +0200
+Subject: [PATCH] Do not deleter /boot from rootfs
+
+---
+ include/rootfs.mk | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/include/rootfs.mk b/include/rootfs.mk
+index f2d2494..f25be15 100644
+--- a/include/rootfs.mk
++++ b/include/rootfs.mk
+@@ -96,7 +96,6 @@ define prepare_rootfs
+ 	rm -f $(1)/usr/lib/opkg/lists/*
+ 	rm -f $(1)/usr/lib/opkg/info/*.postinst*
+ 	rm -f $(1)/var/lock/*.lock
+-	rm -rf $(1)/boot
+ 	$(call clean_ipkg,$(1))
+ 	$(call mklibs,$(1))
+ endef
+-- 
+2.26.0
+
