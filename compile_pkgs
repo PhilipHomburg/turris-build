@@ -50,6 +50,10 @@ set_target() {
 			TARGET_BOARD=mox
 			TARGET_ARCH=aarch64
 			;;
+		atlas)
+			TARGET_BOARD=atlas
+			TARGET_ARCH=aarch64
+            ;;
 		*)
 			echo "Invalid target board!!! Use -t [turris1x|omnia|mox]!!!"
 			exit 1

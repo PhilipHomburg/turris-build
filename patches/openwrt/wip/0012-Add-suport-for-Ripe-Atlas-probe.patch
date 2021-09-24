@@ -1,0 +1,959 @@
+From 08fa9398798f4cccbadf622208b62ee3e8bd66ea Mon Sep 17 00:00:00 2001
+From: Michal Hrusecky <michal.hrusecky@turris.com>
+Date: Fri, 24 Sep 2021 16:00:24 +0200
+Subject: [PATCH] Add support for Ripe Atlas probe
+
+---
+ target/linux/mvebu/image/cortex-a53.mk        |  12 +
+ .../90301-ripe-atlas-support.patch            | 916 ++++++++++++++++++
+ 2 files changed, 928 insertions(+)
+ create mode 100644 target/linux/mvebu/patches-4.14/90301-ripe-atlas-support.patch
+
+diff --git a/target/linux/mvebu/image/cortex-a53.mk b/target/linux/mvebu/image/cortex-a53.mk
+index 2cb0a42..303a5b6 100644
+--- a/target/linux/mvebu/image/cortex-a53.mk
++++ b/target/linux/mvebu/image/cortex-a53.mk
+@@ -43,6 +43,18 @@ define Device/cznic-mox
+ endef
+ TARGET_DEVICES += cznic-mox
+ 
++define Device/ripe-atlas
++  KERNEL_NAME := Image dtbs
++  KERNEL := kernel-bin
++  DEVICE_TITLE := Atlas (Ripes Marvell Armada 3720 Based Board)
++  DEVICE_PACKAGES := kmod-usb2 kmod-gpio-button-hotplug
++  DEVICE_DTS := armada-3720-ripe-atlas
++  DTS_DIR := $(DTS_DIR)/marvell
++  SUPPORTED_DEVICES := cznic,mox
++endef
++TARGET_DEVICES += ripe-atlas
++
++
+ define Device/marvell_armada-3720-db
+   $(call Device/Default-arm64)
+   DEVICE_TITLE := Marvell Armada 3720 Development Board DB-88F3720-DDR3
+diff --git a/target/linux/mvebu/patches-4.14/90301-ripe-atlas-support.patch b/target/linux/mvebu/patches-4.14/90301-ripe-atlas-support.patch
+new file mode 100644
+index 0000000..b64b4e8
+--- /dev/null
++++ b/target/linux/mvebu/patches-4.14/90301-ripe-atlas-support.patch
+@@ -0,0 +1,916 @@
++From ac9e23358f1df9b4ec2d1da027d770a5da179cdf Mon Sep 17 00:00:00 2001
++From: Michal Hrusecky <michal.hrusecky@turris.com>
++Date: Fri, 24 Sep 2021 15:54:50 +0200
++Subject: [PATCH] arm64: Add dts for Ripe Atlas
++
++---
++ arch/arm64/boot/dts/marvell/Makefile          |   1 +
++ .../dts/marvell/armada-3720-ripe-atlas.dts    | 884 ++++++++++++++++++
++ 2 files changed, 885 insertions(+)
++ create mode 100644 arch/arm64/boot/dts/marvell/armada-3720-ripe-atlas.dts
++
++diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
++index 51782b31..a2ecc9d0 100644
++--- a/arch/arm64/boot/dts/marvell/Makefile
+++++ b/arch/arm64/boot/dts/marvell/Makefile
++@@ -7,6 +7,7 @@ dtb-$(CONFIG_ARCH_BERLIN) += berlin4ct-stb.dtb
++ dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-db.dtb
++ dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin.dtb
++ dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
+++dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-ripe-atlas.dtb
++ dtb-$(CONFIG_ARCH_MVEBU) += armada-7040-db.dtb
++ dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-db.dtb
++ dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin.dtb
++diff --git a/arch/arm64/boot/dts/marvell/armada-3720-ripe-atlas.dts b/arch/arm64/boot/dts/marvell/armada-3720-ripe-atlas.dts
++new file mode 100644
++index 00000000..569dd726
++--- /dev/null
+++++ b/arch/arm64/boot/dts/marvell/armada-3720-ripe-atlas.dts
++@@ -0,0 +1,884 @@
+++// SPDX-License-Identifier: GPL-2.0+ or X11
+++/*
+++ * Device Tree file for CZ.NIC Turris Mox Board
+++ * 2018 by Marek Behun <marek.behun@nic.cz>
+++ */
+++
+++/dts-v1/;
+++
+++#include <dt-bindings/gpio/gpio.h>
+++#include <dt-bindings/input/input.h>
+++#include "armada-372x.dtsi"
+++
+++/ {
+++	model = "CZ.NIC Turris Mox Board";
+++	compatible = "cznic,turris-mox", "marvell,armada3720",
+++		     "marvell,armada3710";
+++
+++	aliases {
+++		spi0 = &spi0;
+++		ethernet1 = &eth1;
+++	};
+++
+++	chosen {
+++		stdout-path = "serial0:115200n8";
+++	};
+++
+++	memory@0 {
+++		device_type = "memory";
+++		reg = <0x00000000 0x00000000 0x00000000 0x20000000>;
+++	};
+++
+++	leds {
+++		compatible = "gpio-leds";
+++		red {
+++			gpios = <&gpiosb 21 GPIO_ACTIVE_LOW>;
+++			linux,default-trigger = "default-on";
+++		};
+++	};
+++
+++	gpio-keys {
+++		compatible = "gpio-keys";
+++
+++		reset-button {
+++			label = "reset";
+++			linux,code = <BTN_MISC>;
+++			gpios = <&gpiosb 20 GPIO_ACTIVE_LOW>;
+++			debounce-interval = <60>;
+++		};
+++	};
+++
+++	exp_usb3_vbus: usb3-vbus {
+++		compatible = "regulator-fixed";
+++		regulator-name = "usb3-vbus";
+++		regulator-min-microvolt = <5000000>;
+++		regulator-max-microvolt = <5000000>;
+++		enable-active-high;
+++		regulator-always-on;
+++		gpio = <&gpiosb 0 GPIO_ACTIVE_HIGH>;
+++	};
+++
+++	usb3_phy: usb3-phy {
+++		compatible = "usb-nop-xceiv";
+++		vcc-supply = <&exp_usb3_vbus>;
+++	};
+++
+++	vsdc_reg: vsdc-reg {
+++		compatible = "regulator-gpio";
+++		regulator-name = "vsdc";
+++		regulator-min-microvolt = <1800000>;
+++		regulator-max-microvolt = <3300000>;
+++		regulator-boot-on;
+++
+++		gpios = <&gpiosb 23 GPIO_ACTIVE_HIGH>;
+++		gpios-states = <0>;
+++		states = <1800000 0x1
+++			  3300000 0x0>;
+++		enable-active-high;
+++	};
+++
+++	vsdio_reg: vsdio-reg {
+++		compatible = "regulator-gpio";
+++		regulator-name = "vsdio";
+++		regulator-min-microvolt = <1800000>;
+++		regulator-max-microvolt = <3300000>;
+++		regulator-boot-on;
+++
+++		gpios = <&gpiosb 22 GPIO_ACTIVE_HIGH>;
+++		gpios-states = <0>;
+++		states = <1800000 0x1
+++			  3300000 0x0>;
+++		enable-active-high;
+++	};
+++
+++	sdhci1_pwrseq: sdhci1-pwrseq {
+++		compatible = "mmc-pwrseq-simple";
+++		reset-gpios = <&gpionb 19 GPIO_ACTIVE_HIGH>;
+++		status = "okay";
+++	};
+++
+++	sfp: sfp {
+++		compatible = "sff,sfp+";
+++		i2c-bus = <&i2c0>;
+++		los-gpio = <&moxtet_sfp 0 GPIO_ACTIVE_HIGH>;
+++		tx-fault-gpio = <&moxtet_sfp 1 GPIO_ACTIVE_HIGH>;
+++		mod-def0-gpio = <&moxtet_sfp 2 GPIO_ACTIVE_LOW>;
+++		tx-disable-gpio = <&moxtet_sfp 3 GPIO_ACTIVE_HIGH>;
+++		rate-select0-gpio = <&moxtet_sfp 4 GPIO_ACTIVE_HIGH>;
+++		status = "disabled";
+++	};
+++
+++	soc {
+++		internal-regs@d0000000 {
+++			turris_mox_crypto: crypto@0 {
+++				compatible = "cznic,turris-mox-rwtm";
+++				mboxes = <&rwtm 0>;
+++				status = "okay";
+++			};
+++		};
+++	};
+++};
+++
+++&pinctrl_nb {
+++	spi_cs1_pins: spi-cs1-pins {
+++		groups = "spi_cs1";
+++		function = "spi";
+++	};
+++
+++	sdio0_pins: sdio0-pins {
+++		groups = "sdio0";
+++		function = "sdio";
+++	};
+++};
+++
+++&pinctrl_sb {
+++	sdio_sb_pins: sdio-sb-pins {
+++		groups = "sdio_sb";
+++		function = "sdio";
+++	};
+++
+++	smi_pins: smi-pins {
+++		groups = "smi";
+++		function = "smi";
+++	};
+++
+++	pcie_pins: pcie1-pins {
+++		groups = "pcie1";
+++		function = "gpio";
+++	};
+++};
+++
+++&i2c0 {
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&i2c1_pins>;
+++	status = "okay";
+++
+++	rtc@6f {
+++		compatible = "microchip,mcp7940x";
+++		reg = <0x6f>;
+++	};
+++};
+++
+++&pcie0 {
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&pcie_pins>;
+++	status = "okay";
+++	max-link-speed = <2>;
+++	reset-gpio = <&gpiosb 3 GPIO_ACTIVE_HIGH>;
+++
+++	/* this shall be enabled by u-boot if the PCIe module is present */
+++	status = "disabled";
+++};
+++
+++&uart0 {
+++	status = "okay";
+++};
+++
+++&eth0 {
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&rgmii_pins>;
+++	phy-mode = "rgmii-id";
+++	phy = <&phy1>;
+++	status = "okay";
+++};
+++
+++&eth1 {
+++	reg = <0x40000 0x4000>, <0x18300 0x300>;
+++	phy-mode = "1000base-x";
+++	managed = "in-band-status";
+++};
+++
+++&mdio {
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&smi_pins>;
+++	status = "okay";
+++
+++	phy1: ethernet-phy@1 {
+++		reg = <1>;
+++	};
+++
+++	switch0@10 {
+++		compatible = "marvell,mv88e6190";
+++		reg = <0x10 0>;
+++		dsa,member = <0 0>;
+++		interrupt-parent = <&gpiosb>;
+++		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+++		status = "disabled";
+++
+++		mdio {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			switch0phy1: switch0phy1@1 {
+++				reg = <0x1>;
+++			};
+++
+++			switch0phy2: switch0phy2@2 {
+++				reg = <0x2>;
+++			};
+++
+++			switch0phy3: switch0phy3@3 {
+++				reg = <0x3>;
+++			};
+++
+++			switch0phy4: switch0phy4@4 {
+++				reg = <0x4>;
+++			};
+++
+++			switch0phy5: switch0phy5@5 {
+++				reg = <0x5>;
+++			};
+++
+++			switch0phy6: switch0phy6@6 {
+++				reg = <0x6>;
+++			};
+++
+++			switch0phy7: switch0phy7@7 {
+++				reg = <0x7>;
+++			};
+++
+++			switch0phy8: switch0phy8@8 {
+++				reg = <0x8>;
+++			};
+++		};
+++
+++		ports {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			port@1 {
+++				reg = <0x1>;
+++				label = "lan1";
+++				phy-handle = <&switch0phy1>;
+++			};
+++
+++			port@2 {
+++				reg = <0x2>;
+++				label = "lan2";
+++				phy-handle = <&switch0phy2>;
+++			};
+++
+++			port@3 {
+++				reg = <0x3>;
+++				label = "lan3";
+++				phy-handle = <&switch0phy3>;
+++			};
+++
+++			port@4 {
+++				reg = <0x4>;
+++				label = "lan4";
+++				phy-handle = <&switch0phy4>;
+++			};
+++
+++			port@5 {
+++				reg = <0x5>;
+++				label = "lan5";
+++				phy-handle = <&switch0phy5>;
+++			};
+++
+++			port@6 {
+++				reg = <0x6>;
+++				label = "lan6";
+++				phy-handle = <&switch0phy6>;
+++			};
+++
+++			port@7 {
+++				reg = <0x7>;
+++				label = "lan7";
+++				phy-handle = <&switch0phy7>;
+++			};
+++
+++			port@8 {
+++				reg = <0x8>;
+++				label = "lan8";
+++				phy-handle = <&switch0phy8>;
+++			};
+++
+++			port@9 {
+++				reg = <0x9>;
+++				label = "cpu";
+++				ethernet = <&eth1>;
+++			};
+++
+++			switch0port10: port@a {
+++				reg = <0xa>;
+++				label = "dsa";
+++				phy-mode = "2500base-x";
+++				link = <&switch1port9 &switch2port9>;
+++				status = "disabled";
+++			};
+++
+++			port-sfp@a {
+++				reg = <0xa>;
+++				label = "sfp";
+++				sfp = <&sfp>;
+++				phy-mode = "sgmii";
+++				managed = "in-band-status";
+++				status = "disabled";
+++			};
+++		};
+++	};
+++
+++	switch0@2 {
+++		compatible = "marvell,mv88e6085";
+++		reg = <0x2 0>;
+++		dsa,member = <0 0>;
+++		interrupt-parent = <&gpiosb>;
+++		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+++		status = "disabled";
+++
+++		mdio {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			switch0phy1_topaz: switch0phy1@11 {
+++				reg = <0x11>;
+++			};
+++
+++			switch0phy2_topaz: switch0phy2@12 {
+++				reg = <0x12>;
+++			};
+++
+++			switch0phy3_topaz: switch0phy3@13 {
+++				reg = <0x13>;
+++			};
+++
+++			switch0phy4_topaz: switch0phy4@14 {
+++				reg = <0x14>;
+++			};
+++		};
+++
+++		ports {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			port@1 {
+++				reg = <0x1>;
+++				label = "lan1";
+++				phy-handle = <&switch0phy1_topaz>;
+++			};
+++
+++			port@2 {
+++				reg = <0x2>;
+++				label = "lan2";
+++				phy-handle = <&switch0phy2_topaz>;
+++			};
+++
+++			port@3 {
+++				reg = <0x3>;
+++				label = "lan3";
+++				phy-handle = <&switch0phy3_topaz>;
+++			};
+++
+++			port@4 {
+++				reg = <0x4>;
+++				label = "lan4";
+++				phy-handle = <&switch0phy4_topaz>;
+++			};
+++
+++			port@5 {
+++				reg = <0x5>;
+++				label = "cpu";
+++				ethernet = <&eth1>;
+++			};
+++		};
+++	};
+++
+++	switch1@11 {
+++		compatible = "marvell,mv88e6190";
+++		reg = <0x11 0>;
+++		dsa,member = <0 1>;
+++		interrupt-parent = <&gpiosb>;
+++		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+++		status = "disabled";
+++
+++		mdio {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			switch1phy1: switch1phy1@1 {
+++				reg = <0x1>;
+++			};
+++
+++			switch1phy2: switch1phy2@2 {
+++				reg = <0x2>;
+++			};
+++
+++			switch1phy3: switch1phy3@3 {
+++				reg = <0x3>;
+++			};
+++
+++			switch1phy4: switch1phy4@4 {
+++				reg = <0x4>;
+++			};
+++
+++			switch1phy5: switch1phy5@5 {
+++				reg = <0x5>;
+++			};
+++
+++			switch1phy6: switch1phy6@6 {
+++				reg = <0x6>;
+++			};
+++
+++			switch1phy7: switch1phy7@7 {
+++				reg = <0x7>;
+++			};
+++
+++			switch1phy8: switch1phy8@8 {
+++				reg = <0x8>;
+++			};
+++		};
+++
+++		ports {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			port@1 {
+++				reg = <0x1>;
+++				label = "lan9";
+++				phy-handle = <&switch1phy1>;
+++			};
+++
+++			port@2 {
+++				reg = <0x2>;
+++				label = "lan10";
+++				phy-handle = <&switch1phy2>;
+++			};
+++
+++			port@3 {
+++				reg = <0x3>;
+++				label = "lan11";
+++				phy-handle = <&switch1phy3>;
+++			};
+++
+++			port@4 {
+++				reg = <0x4>;
+++				label = "lan12";
+++				phy-handle = <&switch1phy4>;
+++			};
+++
+++			port@5 {
+++				reg = <0x5>;
+++				label = "lan13";
+++				phy-handle = <&switch1phy5>;
+++			};
+++
+++			port@6 {
+++				reg = <0x6>;
+++				label = "lan14";
+++				phy-handle = <&switch1phy6>;
+++			};
+++
+++			port@7 {
+++				reg = <0x7>;
+++				label = "lan15";
+++				phy-handle = <&switch1phy7>;
+++			};
+++
+++			port@8 {
+++				reg = <0x8>;
+++				label = "lan16";
+++				phy-handle = <&switch1phy8>;
+++			};
+++
+++			switch1port9: port@9 {
+++				reg = <0x9>;
+++				label = "dsa";
+++				phy-mode = "2500base-x";
+++				link = <&switch0port10>;
+++			};
+++
+++			switch1port10: port@a {
+++				reg = <0xa>;
+++				label = "dsa";
+++				phy-mode = "2500base-x";
+++				link = <&switch2port9>;
+++				status = "disabled";
+++			};
+++
+++			port-sfp@a {
+++				reg = <0xa>;
+++				label = "sfp";
+++				sfp = <&sfp>;
+++				phy-mode = "sgmii";
+++				managed = "in-band-status";
+++				status = "disabled";
+++			};
+++		};
+++	};
+++
+++	switch1@2 {
+++		compatible = "marvell,mv88e6085";
+++		reg = <0x2 0>;
+++		dsa,member = <0 1>;
+++		interrupt-parent = <&gpiosb>;
+++		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+++		status = "disabled";
+++
+++		mdio {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			switch1phy1_topaz: switch1phy1@11 {
+++				reg = <0x11>;
+++			};
+++
+++			switch1phy2_topaz: switch1phy2@12 {
+++				reg = <0x12>;
+++			};
+++
+++			switch1phy3_topaz: switch1phy3@13 {
+++				reg = <0x13>;
+++			};
+++
+++			switch1phy4_topaz: switch1phy4@14 {
+++				reg = <0x14>;
+++			};
+++		};
+++
+++		ports {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			port@1 {
+++				reg = <0x1>;
+++				label = "lan9";
+++				phy-handle = <&switch1phy1_topaz>;
+++			};
+++
+++			port@2 {
+++				reg = <0x2>;
+++				label = "lan10";
+++				phy-handle = <&switch1phy2_topaz>;
+++			};
+++
+++			port@3 {
+++				reg = <0x3>;
+++				label = "lan11";
+++				phy-handle = <&switch1phy3_topaz>;
+++			};
+++
+++			port@4 {
+++				reg = <0x4>;
+++				label = "lan12";
+++				phy-handle = <&switch1phy4_topaz>;
+++			};
+++
+++			port@5 {
+++				reg = <0x5>;
+++				label = "dsa";
+++				phy-mode = "2500base-x";
+++				link = <&switch0port10>;
+++			};
+++		};
+++	};
+++
+++	switch2@12 {
+++		compatible = "marvell,mv88e6190";
+++		reg = <0x12 0>;
+++		dsa,member = <0 2>;
+++		interrupt-parent = <&gpiosb>;
+++		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+++		status = "disabled";
+++
+++		mdio {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			switch2phy1: switch2phy1@1 {
+++				reg = <0x1>;
+++			};
+++
+++			switch2phy2: switch2phy2@2 {
+++				reg = <0x2>;
+++			};
+++
+++			switch2phy3: switch2phy3@3 {
+++				reg = <0x3>;
+++			};
+++
+++			switch2phy4: switch2phy4@4 {
+++				reg = <0x4>;
+++			};
+++
+++			switch2phy5: switch2phy5@5 {
+++				reg = <0x5>;
+++			};
+++
+++			switch2phy6: switch2phy6@6 {
+++				reg = <0x6>;
+++			};
+++
+++			switch2phy7: switch2phy7@7 {
+++				reg = <0x7>;
+++			};
+++
+++			switch2phy8: switch2phy8@8 {
+++				reg = <0x8>;
+++			};
+++		};
+++
+++		ports {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			port@1 {
+++				reg = <0x1>;
+++				label = "lan17";
+++				phy-handle = <&switch2phy1>;
+++			};
+++
+++			port@2 {
+++				reg = <0x2>;
+++				label = "lan18";
+++				phy-handle = <&switch2phy2>;
+++			};
+++
+++			port@3 {
+++				reg = <0x3>;
+++				label = "lan19";
+++				phy-handle = <&switch2phy3>;
+++			};
+++
+++			port@4 {
+++				reg = <0x4>;
+++				label = "lan20";
+++				phy-handle = <&switch2phy4>;
+++			};
+++
+++			port@5 {
+++				reg = <0x5>;
+++				label = "lan21";
+++				phy-handle = <&switch2phy5>;
+++			};
+++
+++			port@6 {
+++				reg = <0x6>;
+++				label = "lan22";
+++				phy-handle = <&switch2phy6>;
+++			};
+++
+++			port@7 {
+++				reg = <0x7>;
+++				label = "lan23";
+++				phy-handle = <&switch2phy7>;
+++			};
+++
+++			port@8 {
+++				reg = <0x8>;
+++				label = "lan24";
+++				phy-handle = <&switch2phy8>;
+++			};
+++
+++			switch2port9: port@9 {
+++				reg = <0x9>;
+++				label = "dsa";
+++				phy-mode = "2500base-x";
+++				link = <&switch1port10 &switch0port10>;
+++			};
+++
+++			port-sfp@a {
+++				reg = <0xa>;
+++				label = "sfp";
+++				sfp = <&sfp>;
+++				phy-mode = "sgmii";
+++				managed = "in-band-status";
+++				status = "disabled";
+++			};
+++		};
+++	};
+++
+++	switch2@2 {
+++		compatible = "marvell,mv88e6085";
+++		reg = <0x2 0>;
+++		dsa,member = <0 2>;
+++		interrupt-parent = <&gpiosb>;
+++		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+++		status = "disabled";
+++
+++		mdio {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			switch2phy1_topaz: switch2phy1@11 {
+++				reg = <0x11>;
+++			};
+++
+++			switch2phy2_topaz: switch2phy2@12 {
+++				reg = <0x12>;
+++			};
+++
+++			switch2phy3_topaz: switch2phy3@13 {
+++				reg = <0x13>;
+++			};
+++
+++			switch2phy4_topaz: switch2phy4@14 {
+++				reg = <0x14>;
+++			};
+++		};
+++
+++		ports {
+++			#address-cells = <1>;
+++			#size-cells = <0>;
+++
+++			port@1 {
+++				reg = <0x1>;
+++				label = "lan17";
+++				phy-handle = <&switch2phy1_topaz>;
+++			};
+++
+++			port@2 {
+++				reg = <0x2>;
+++				label = "lan18";
+++				phy-handle = <&switch2phy2_topaz>;
+++			};
+++
+++			port@3 {
+++				reg = <0x3>;
+++				label = "lan19";
+++				phy-handle = <&switch2phy3_topaz>;
+++			};
+++
+++			port@4 {
+++				reg = <0x4>;
+++				label = "lan20";
+++				phy-handle = <&switch2phy4_topaz>;
+++			};
+++
+++			port@5 {
+++				reg = <0x5>;
+++				label = "dsa";
+++				phy-mode = "2500base-x";
+++				link = <&switch1port10 &switch0port10>;
+++			};
+++		};
+++	};
+++
+++};
+++
+++/*
+++&sdhci0 {
+++	wp-inverted;
+++	bus-width = <4>;
+++	cd-gpios = <&gpionb 10 GPIO_ACTIVE_HIGH>;
+++	vqmmc-supply = <&vsdc_reg>;
+++	marvell,pad-type = "sd";
+++	status = "okay";
+++};*/
+++
+++&sdhci0 {
+++	non-removable;
+++	bus-width = <4>;
+++	mmc-ddr-1_8v;
+++	mmc-hs400-1_8v;
+++	sd-uhs-sdr104;
+++	marvell,xenon-emmc;
+++	marvell,xenon-tun-count = <9>;
+++	marvell,pad-type = "fixed-1-8v";
+++	vqmmc-supply = <&vsdc_reg>;
+++
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&mmc_pins>;
+++	status = "okay";
+++
+++	#address-cells = <1>;
+++	#size-cells = <0>;
+++	mmccard: mmccard@0 {
+++		compatible = "mmc-card";
+++		reg = <0>;
+++	};
+++};
+++
+++&sdhci1 {
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&sdio0_pins &sdio_sb_pins>;
+++	non-removable;
+++	bus-width = <4>;
+++	marvell,pad-type = "sd";
+++	vqmmc-supply = <&vsdio_reg>;
+++	mmc-pwrseq = <&sdhci1_pwrseq>;
+++	status = "okay";
+++};
+++
+++&spi0 {
+++	status = "okay";
+++	pinctrl-names = "default";
+++	pinctrl-0 = <&spi_quad_pins &spi_cs1_pins>;
+++	assigned-clocks = <&nb_periph_clk 7>;
+++	assigned-clock-parents = <&tbg 1>;
+++	assigned-clock-rates = <20000000>;
+++
+++	spi-flash@0 {
+++		#address-cells = <1>;
+++		#size-cells = <1>;
+++		compatible = "jedec,spi-nor";
+++		reg = <0>;
+++		spi-max-frequency = <20000000>;
+++
+++		partitions {
+++			compatible = "fixed-partitions";
+++			#address-cells = <1>;
+++			#size-cells = <1>;
+++
+++			partition@0 {
+++				label = "secure-firmware";
+++				reg = <0x0 0x20000>;
+++			};
+++
+++			partition@20000 {
+++				label = "u-boot";
+++				reg = <0x20000 0x160000>;
+++			};
+++
+++			partition@180000 {
+++				label = "u-boot-env";
+++				reg = <0x180000 0x10000>;
+++			};
+++
+++			partition@190000 {
+++				label = "Rescue system";
+++				reg = <0x190000 0x660000>;
+++			};
+++
+++			partition@7f0000 {
+++				label = "dtb";
+++				reg = <0x7f0000 0x10000>;
+++			};
+++		};
+++	};
+++
+++	moxtet@1 {
+++		#address-cells = <1>;
+++		#size-cells = <0>;
+++		compatible = "cznic,moxtet";
+++		reg = <1>;
+++		reset-gpios = <&gpiosb 2 GPIO_ACTIVE_LOW>;
+++		spi-max-frequency = <10000000>;
+++		spi-cpol;
+++		spi-cpha;
+++
+++		moxtet_sfp: gpio@0 {
+++			compatible = "cznic,moxtet-gpio";
+++			gpio-controller;
+++			#gpio-cells = <2>;
+++			reg = <0>;
+++			moxtet,id = <1>;
+++			moxtet,input-mask = <0x7>;
+++			moxtet,output-mask = <0x3>;
+++			status = "disabled";
+++		};
+++	};
+++};
+++
+++&rwtm {
+++	status = "okay";
+++};
+++
+++&usb2 {
+++	status = "okay";
+++};
+++
+++&usb3 {
+++	status = "okay";
+++	usb-phy = <&usb3_phy>;
+++};
++-- 
++2.33.0
++
+-- 
+2.33.0
+
