@@ -1,0 +1,40 @@
+From 8428d80f8172acb19c49de0196e572cc59177c1f Mon Sep 17 00:00:00 2001
+From: Michal Hrusecky <michal.hrusecky@turris.com>
+Date: Thu, 30 Sep 2021 15:36:24 +0200
+Subject: [PATCH] Add Ripe Atlas as a HW variant
+
+There is a new device - Ripe Atlas based on modified Turris Mox design.
+---
+ hardware/mox/mox-otp/Makefile    | 2 +-
+ hardware/mox/mox-pkcs11/Makefile | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/hardware/mox/mox-otp/Makefile b/hardware/mox/mox-otp/Makefile
+index 6e6c7d394..24201f18d 100644
+--- a/hardware/mox/mox-otp/Makefile
++++ b/hardware/mox/mox-otp/Makefile
+@@ -28,7 +28,7 @@ define Package/mox-otp
+   URL:=https://gitlab.nic.cz/turris/mox-otp
+   PROVIDES:=turris-otp
+   DEPENDS:=+python3-light
+-  DEPENDS+=@TARGET_mvebu_cortexa53_DEVICE_cznic-mox
++  DEPENDS+=@(TARGET_mvebu_cortexa53_DEVICE_cznic-mox||TARGET_mvebu_cortexa53_DEVICE_ripe-atlas)
+   VARIANT:=python3
+ endef
+ 
+diff --git a/hardware/mox/mox-pkcs11/Makefile b/hardware/mox/mox-pkcs11/Makefile
+index 3bb5b5dee..016daa903 100644
+--- a/hardware/mox/mox-pkcs11/Makefile
++++ b/hardware/mox/mox-pkcs11/Makefile
+@@ -23,7 +23,7 @@ include $(INCLUDE_DIR)/package.mk
+ 
+ define Package/mox-pkcs11
+   TITLE:=MOX PKCS11
+-  DEPENDS:=@TARGET_mvebu_cortexa53_DEVICE_cznic-mox +libopenssl
++  DEPENDS:=@(TARGET_mvebu_cortexa53_DEVICE_cznic-mox||TARGET_mvebu_cortexa53_DEVICE_ripe-atlas) +libopenssl
+ endef
+ 
+ define Package/mox-pkcs11/description
+-- 
+2.33.0
+
