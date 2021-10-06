@@ -1,0 +1,25 @@
+From b09134ad98cc9344377486c888cf562a12260a3b Mon Sep 17 00:00:00 2001
+From: Philip Homburg <phomburg@ripe.net>
+Date: Wed, 5 Aug 2020 12:09:14 +0200
+Subject: [PATCH] Do not install mox_autosetup (gerates wrong config)
+
+---
+ hardware/mox/mox-support/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/hardware/mox/mox-support/Makefile b/hardware/mox/mox-support/Makefile
+index 8434eea68..ac0e8f6b4 100644
+--- a/hardware/mox/mox-support/Makefile
++++ b/hardware/mox/mox-support/Makefile
+@@ -60,7 +60,7 @@ define Package/mox-support/install
+ 	$(INSTALL_DIR) $(1)/usr/share/mox
+ 	$(INSTALL_BIN) ./files/mox_autosetup $(1)/usr/share/mox
+ 	$(INSTALL_DIR) $(1)/etc/init.d
+-	$(INSTALL_BIN) ./files/init $(1)/etc/init.d/mox_autosetup
++	#$(INSTALL_BIN) ./files/init $(1)/etc/init.d/mox_autosetup
+ 	$(INSTALL_DIR) $(1)/lib/firmware/mrvl/
+ 	$(INSTALL_DATA) ./files/sdsd8997_combo_v4.bin $(1)/lib/firmware/mrvl
+ 	ln -s sdsd8997_combo_v4.bin $(1)/lib/firmware/mrvl/sd8997_uapsta.bin
+-- 
+2.20.1
+
