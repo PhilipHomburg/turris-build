@@ -5,7 +5,7 @@ CONFIG_BUILD_NLS=y
 
 # Build everything
 CONFIG_ALL_KMODS=y
-CONFIG_ALL=y
+CONFIG_ALL=n
 
 # Package output options
 CONFIG_SIGNED_PACKAGES=n
@@ -32,3 +32,6 @@ CONFIG_FSTOOLS_MMC_IS_MTD=y
 # Disable failsafe as we have rescue for that purpose
 CONFIG_PREINITOPT=y
 CONFIG_TARGET_PREINIT_DISABLE_FAILSAFE=y
+
+# Why?
+CONFIG_FSTOOLS_MMC_IS_MTD=y
