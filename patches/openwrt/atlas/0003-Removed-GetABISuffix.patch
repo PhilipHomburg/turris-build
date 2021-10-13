@@ -1,0 +1,25 @@
+From 7430a2847cd61e3c2640f20d12b80971671fcecd Mon Sep 17 00:00:00 2001
+From: Philip Homburg <phomburg@ripe.net>
+Date: Thu, 7 Oct 2021 11:19:35 +0200
+Subject: [PATCH 3/3] Removed GetABISuffix
+
+---
+ package/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package/Makefile b/package/Makefile
+index 58c1ba2bbf..0c102a0079 100644
+--- a/package/Makefile
++++ b/package/Makefile
+@@ -66,7 +66,7 @@ $(curdir)/install: $(TMP_DIR)/.build $(curdir)/merge $(if $(CONFIG_TARGET_PER_DE
+ 	rm -rf $(TARGET_DIR) $(TARGET_DIR_ORIG)
+ 	mkdir -p $(TARGET_DIR)/tmp
+ 	$(call opkg,$(TARGET_DIR)) install \
+-		$(call opkg_package_files,$(foreach pkg,$(shell cat $(PACKAGE_INSTALL_FILES) 2>/dev/null),$(pkg)$(call GetABISuffix,$(pkg))))
++		$(call opkg_package_files,$(foreach pkg,$(shell cat $(PACKAGE_INSTALL_FILES) 2>/dev/null),$(pkg)))
+ 	@for file in $(PACKAGE_INSTALL_FILES); do \
+ 		[ -s $$file.flags ] || continue; \
+ 		for flag in `cat $$file.flags`; do \
+-- 
+2.20.1
+
