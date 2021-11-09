@@ -1,3 +1,6 @@
 CONFIG_TARGET_mvebu=y
 CONFIG_TARGET_mvebu_cortexa53=y
 CONFIG_TARGET_mvebu_cortexa53_DEVICE_ripe-atlas=y
+
+CONFIG_PACKAGE_procd=y
+CONFIG_PACKAGE_base-files=y
