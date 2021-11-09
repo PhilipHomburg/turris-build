@@ -1,0 +1,22 @@
+From 683601cf2b899c1f2a5078511af7853dfd7c3057 Mon Sep 17 00:00:00 2001
+From: Philip Homburg <phomburg@ripe.net>
+Date: Wed, 27 Oct 2021 15:30:12 +0200
+Subject: [PATCH 1/2] No need for Image.lzma
+
+---
+ target/linux/mvebu/cortexa53/target.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/target/linux/mvebu/cortexa53/target.mk b/target/linux/mvebu/cortexa53/target.mk
+index d4c49c2e69..d8b992d068 100644
+--- a/target/linux/mvebu/cortexa53/target.mk
++++ b/target/linux/mvebu/cortexa53/target.mk
+@@ -14,4 +14,4 @@ FEATURES+=ext4
+ DEFAULT_PACKAGES+=e2fsprogs ethtool mkf2fs partx-utils
+ 
+ KERNELNAME:=Image dtbs
+-KERNEL_IMAGES:=Image Image.lzma
++KERNEL_IMAGES:=Image
+-- 
+2.20.1
+
