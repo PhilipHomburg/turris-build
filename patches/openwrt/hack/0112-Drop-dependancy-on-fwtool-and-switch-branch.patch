@@ -1,0 +1,25 @@
+From 9f72724dd999a652ecda53a90a4f9255632e9bc0 Mon Sep 17 00:00:00 2001
+From: Philip Homburg <phomburg@ripe.net>
+Date: Wed, 27 Oct 2021 15:31:17 +0200
+Subject: [PATCH 2/2] Drop dependancy on fwtool and switch-branch
+
+---
+ package/base-files/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package/base-files/Makefile b/package/base-files/Makefile
+index 09d36e1d01..1fada40e85 100644
+--- a/package/base-files/Makefile
++++ b/package/base-files/Makefile
+@@ -37,7 +37,7 @@ endif
+ define Package/base-files
+   SECTION:=base
+   CATEGORY:=Base system
+-  DEPENDS:=+netifd +libc +procd +jsonfilter +SIGNED_PACKAGES:usign +SIGNED_PACKAGES:openwrt-keyring +NAND_SUPPORT:ubi-utils +fstools +fwtool +switch-branch
++  DEPENDS:=+netifd +libc +procd +jsonfilter +SIGNED_PACKAGES:usign +SIGNED_PACKAGES:openwrt-keyring +NAND_SUPPORT:ubi-utils +fstools 
+   TITLE:=Base filesystem for OpenWrt
+   URL:=http://openwrt.org/
+   VERSION:=$(PKG_RELEASE)-$(REVISION)
+-- 
+2.20.1
+
