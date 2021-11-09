@@ -1,0 +1,23 @@
+From 1768aba6bda845c37755dea42a956b61ec2d3c52 Mon Sep 17 00:00:00 2001
+From: Philip Homburg <phomburg@ripe.net>
+Date: Wed, 3 Nov 2021 13:58:48 +0100
+Subject: [PATCH 3/3] change the root from '!' to '*' otherwise ssh with RSA
+ key does not work.
+
+---
+ package/base-files/files/etc/shadow | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/package/base-files/files/etc/shadow b/package/base-files/files/etc/shadow
+index ac3b8a217b..77ebac6d68 100644
+--- a/package/base-files/files/etc/shadow
++++ b/package/base-files/files/etc/shadow
+@@ -1,4 +1,4 @@
+-root:!:0:0:99999:7:::
++root:*:0:0:99999:7:::
+ daemon:*:0:0:99999:7:::
+ ftp:*:0:0:99999:7:::
+ network:*:0:0:99999:7:::
+-- 
+2.20.1
+
