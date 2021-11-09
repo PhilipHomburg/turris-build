@@ -7,9 +7,6 @@ CONFIG_BUILD_NLS=y
 CONFIG_ALL_KMODS=n
 CONFIG_ALL=n
 
-# CONFIG_ALL=n seems to require this:
-#CONFIG_FSTOOLS_MMC_IS_MTD=y
-
 # Fails to compile
 #CONFIG_PACKAGE_kmod-macremapper=n
 
@@ -33,11 +30,11 @@ CONFIG_CCACHE=y
 # Enable/disable various hacks in OpenWrt
 CONFIG_TOOLCHAINOPTS=y
 CONFIG_MUSL_DISABLE_CRYPT_SIZE_HACK=y
-CONFIG_FSTOOLS_MMC_IS_MTD=y
+#CONFIG_FSTOOLS_MMC_IS_MTD=y
 
 # Disable failsafe as we have rescue for that purpose
 CONFIG_PREINITOPT=y
 CONFIG_TARGET_PREINIT_DISABLE_FAILSAFE=y
 
 # Why?
-CONFIG_FSTOOLS_MMC_IS_MTD=y
+#CONFIG_FSTOOLS_MMC_IS_MTD=y
