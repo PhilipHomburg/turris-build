@@ -1,0 +1,21 @@
+From a88eee601cb0a545e637d180a693808c13e35950 Mon Sep 17 00:00:00 2001
+From: Philip Homburg <phomburg@ripe.net>
+Date: Mon, 8 Nov 2021 15:47:56 +0100
+Subject: [PATCH 4/4] Disable CONFIG_BTRFS_FS_CHECK_INTEGRITY
+
+---
+ target/linux/mvebu/cortexa53/config-default | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/target/linux/mvebu/cortexa53/config-default b/target/linux/mvebu/cortexa53/config-default
+index df5f6f341b..1fdd8999e7 100644
+--- a/target/linux/mvebu/cortexa53/config-default
++++ b/target/linux/mvebu/cortexa53/config-default
+@@ -1,3 +1,4 @@
++CONFIG_BTRFS_FS_CHECK_INTEGRITY=n
+ CONFIG_64BIT=y
+ # CONFIG_ACPI is not set
+ CONFIG_ARCH_DMA_ADDR_T_64BIT=y
+-- 
+2.20.1
+

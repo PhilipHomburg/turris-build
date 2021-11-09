@@ -1,7 +1,7 @@
 From 7430a2847cd61e3c2640f20d12b80971671fcecd Mon Sep 17 00:00:00 2001
 From: Philip Homburg <phomburg@ripe.net>
 Date: Thu, 7 Oct 2021 11:19:35 +0200
-Subject: [PATCH 3/3] Removed GetABISuffix
+Subject: [PATCH 3/4] Removed GetABISuffix
 
 ---
  package/Makefile | 2 +-
